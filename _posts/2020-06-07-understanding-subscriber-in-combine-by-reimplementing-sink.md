@@ -31,20 +31,20 @@ What `.sink` method returns is an instance of type `AnyCancellable`, which in tu
 
 First,  it is a subscriber so it must conform to `Subscriber` protocol:
 ```swift
-    final class MySink<Input, Failure>: Subscriber where Failure: Error {
-        func receive(subscription: Subscription) {
-            subscription.request(.unlimited)
-        }
-        
-        func receive(_ input: Input) -> Subscribers.Demand {
-            print("Received value: \(input)")
-            return .none
-        }
-        
-        func receive(completion: Subscribers.Completion<Failure>) {
-            print("Completion: \(completion)")
-        }
+final class MySink<Input, Failure>: Subscriber where Failure: Error {
+    func receive(subscription: Subscription) {
+        subscription.request(.unlimited)
     }
+    
+    func receive(_ input: Input) -> Subscribers.Demand {
+        print("Received value: \(input)")
+        return .none
+    }
+    
+    func receive(completion: Subscribers.Completion<Failure>) {
+        print("Completion: \(completion)")
+    }
+}
 ```
 
 In `receive(subscription:)` method we request an unlimited number of values as its definition. This is the initial request. In `receive(_ input:)` method we return any kind of `Demand` since the demand is additive.
@@ -78,7 +78,7 @@ extension Publisher {
 
 It will not compile with error `Initializer ‘init(_:)’ requires that ‘MySink<Self.Output, Self.Failure>’ conform to ‘Cancellable’`. We make it conform to `Cancellable` with an only required method named `cancel`:
 ```swift
-    final class MySink<Input, Failure>: Subscriber, Cancellable where Failure : Error {
+final class MySink<Input, Failure>: Subscriber, Cancellable where Failure : Error {
     func cancel() {}
 }
 ```
